@@ -1,0 +1,5 @@
+requests
+flask
+pycryptodome
+ecdsa
+rsa
