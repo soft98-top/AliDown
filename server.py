@@ -1311,15 +1311,15 @@ if __name__ == '__main__':
     parser.description = 'AliDown-Server'
     # 服务设置
     server_group = parser.add_argument_group('server')
-    server_group.add_argument('--port', type=int, default=5000, help='server port')
-    server_group.add_argument('--host', type=str, default='127.0.0.1')
+    server_group.add_argument('--port', type=int, default=5000, help='服务监听端口，默认 5000')
+    server_group.add_argument('--host', type=str, default='127.0.0.1', help='服务监听地址，默认 127.0.0.1')
     # 调试设置
     debug_group = parser.add_argument_group('debug')
-    debug_group.add_argument('--debug', type=bool, default=False)
+    debug_group.add_argument('--debug', type=bool, default=False, help='是否开启 debug 模式，默认 False')
     # 服务配置
     config_group = parser.add_argument_group('config')
-    config_group.add_argument('--config', type=str, default='', help='config file path')
-    config_group.add_argument('--db', type=str, default='', help='db file path')
+    config_group.add_argument('--config', type=str, default='', help='配置文件路径，默认 secret/config.json')
+    config_group.add_argument('--db', type=str, default='', help='数据库文件路径，默认 secret/alidown.db')
     # 解析参数
     args = parser.parse_args()
     # 加在参数
