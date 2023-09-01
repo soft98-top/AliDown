@@ -64,7 +64,7 @@ def save_key(pubkey, is_remote=False):
 def load_key():
     global PUBLIC_KEY
     # 判断是否存在密钥文件
-    if not os.path.exists('private.pem'):
+    if not os.path.exists('public.pem'):
         exit_print('请先获取公钥')
     with open(BASE_PATH + 'public.pem', 'r') as f:
         pubkey = rsa.PublicKey.load_pkcs1(f.read().encode('utf-8'))
