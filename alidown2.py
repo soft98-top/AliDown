@@ -767,43 +767,47 @@ else:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='阿里云盘分享链接下载工具')
-    parser.add_argument('-u', '--url', type=str,
+    share_group = parser.add_argument_group('share_link_config', '分享链接相关配置')
+    share_group.add_argument('-u', '--url', type=str,
                         default=None, help='需要下载的分享链接')
-    parser.add_argument('-s', '--sid', type=str,
+    share_group.add_argument('-s', '--sid', type=str,
                         default=None, help='需要下载的share_id')
-    parser.add_argument('-sp', '--spwd', type=str,
+    share_group.add_argument('-sp', '--spwd', type=str,
                         default=None, help='需要下载的分享链接密码')
-    parser.add_argument('-f', '--fid', type=str,
+    share_group.add_argument('-f', '--fid', type=str,
                         default='root', help='需要下载的file_id')
-    parser.add_argument('-q', '--query', type=str,
+    share_group.add_argument('-q', '--query', type=str,
                         default=None, help='搜索分享链接中的文件')
-    parser.add_argument('--select', action='store_true',
+    share_group.add_argument('--select', action='store_true',
                         default=False, help='选择下载文件')
-    parser.add_argument('--folder', type=str, default=None, help='保存文件的位置')
-    parser.add_argument('-v', action='store_true',
+    client_group = parser.add_argument_group('client_config', '客户端相关配置')
+    client_group.add_argument('--folder', type=str, default=None, help='保存文件的位置')
+    client_group.add_argument('-v', action='store_true',
                         default=False, help='查看相关信息')
-    parser.add_argument('-t', '--target', type=str,
-                        default=None, help='切换服务器地址，自动获取配置信息')
-    parser.add_argument('-p', '--pwd', type=str,
-                        default=None, help='获取远程配置信息时，配置链接密码，需要结合-t参数使用')
-    parser.add_argument('--code', type=str,
-                        default=None, help='获取远程配置信息时，配置内测码，需要结合-t参数使用')
-    parser.add_argument('-ti', '--tindex', type=int,
-                        default=None, help='切换目标地址')
-    # parser.add_argument('--debug', action='store_true',
+    # client_group.add_argument('--debug', action='store_true',
     #                     default=False, help='DEBUG模式, 会显示调试信息, 默认为False')
-    parser.add_argument('-n', type=int,
-                    default=20, help='分段并发下载数, 默认为20')
-    parser.add_argument('--chunk', type=int,
-                        default=200, help='分段大小, 默认为300')
-    parser.add_argument('-ct', '--chunktype', type=str,
-                        default='KB', help='分段单位, 可选B, KB, MB, 默认为KB')
-    parser.add_argument('--retry', type=int,
-                        default=5, help='下载失败重试次数, 默认为5')
-    parser.add_argument('--timeout', type=int,
-                        default=10, help='下载超时时间, 默认为10, 单位为秒')
-    parser.add_argument('--proxy', type=str,
+    server_group = parser.add_argument_group('server_config', '服务器相关配置')
+    server_group.add_argument('-t', '--target', type=str,
+                        default=None, help='切换服务器地址，自动获取配置信息')
+    server_group.add_argument('-p', '--pwd', type=str,
+                        default=None, help='获取远程配置信息时，配置链接密码，需要结合-t参数使用')
+    server_group.add_argument('--code', type=str,
+                        default=None, help='获取远程配置信息时，配置内测码，需要结合-t参数使用')
+    server_group.add_argument('-ti', '--tindex', type=int,
+                        default=None, help='切换目标地址')
+    server_group.add_argument('--proxy', type=str,
                         default='', help='设置代理, 默认为空')
+    download_group = parser.add_argument_group('download_config', '下载相关配置')
+    download_group.add_argument('-n', type=int,
+                    default=20, help='分段并发下载数, 默认为20')
+    download_group.add_argument('--chunk', type=int,
+                        default=200, help='分段大小, 默认为300')
+    download_group.add_argument('-ct', '--chunktype', type=str,
+                        default='KB', help='分段单位, 可选B, KB, MB, 默认为KB')
+    download_group.add_argument('--retry', type=int,
+                        default=5, help='下载失败重试次数, 默认为5')
+    download_group.add_argument('--timeout', type=int,
+                        default=10, help='下载超时时间, 默认为10, 单位为秒')
     args = parser.parse_args()
     url = args.url
     sid = args.sid
