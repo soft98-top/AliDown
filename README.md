@@ -18,7 +18,7 @@
 
 ## 使用说明
 
-AliDown 客户端使用说明
+### AliDown 客户端使用说明
 
 ```
 usage: alidown2.py [-h] [-u URL] [-s SID] [-sp SPWD] [-f FID] [-q QUERY] [--select] [--folder FOLDER] [-v] [-t TARGET] [-p PWD] [--code CODE] [-ti TINDEX] [--proxy PROXY]
@@ -69,7 +69,7 @@ download_config:
   --timeout TIMEOUT     下载超时时间, 默认为10, 单位为秒
 ```
 
-AliDown 服务端使用说明
+### AliDown 服务端使用说明
 
 首先配置好服务端配置文件 config.json，默认情况下放在服务端程序当前文件所在目录的 secret 子目录下。
 
@@ -117,7 +117,7 @@ config:
   --db DB          数据库文件路径，默认 secret/alidown.db
 ```
 
-AliDown 管理端使用说明
+### AliDown 管理端使用说明
 
 管理端连接服务端需要公钥文件，服务端在运行成功时，会在服务端程序文件目录下生成公私钥文件，将 public.pem 下载到本地和管理端程序放在同一目录即可。
 
