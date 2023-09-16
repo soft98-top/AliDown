@@ -75,6 +75,10 @@ CONFIG = {
     "code":{},
     "url": "",
 }
+# share_token 全局存储 SHARE_TOKEN = {'id':{'share_token':'','update_time':''}}
+SHARE_TOKEN = {}
+# 分享链接有效时间，单位秒
+SHARE_TOKEN_TIME = 300
 # 当前账户索引
 CUR_ACCOUNT_INDEX = 0
 ENC_KEY = ""
@@ -645,17 +649,26 @@ class ShareLink:
         return headers
     ## 获取share_token
     def get_share_token(self):
-        global RETRY_TIME,INTERVAL
+        global RETRY_TIME,INTERVAL,SHARE_TOKEN,SHARE_TOKEN_TIME
         json_data = {
             "share_id":self.share_id,
             "share_pwd":self.share_pwd
         }
+        cache_share_token = SHARE_TOKEN.get(self.share_id,None)
+        if cache_share_token != None and time.time() - cache_share_token["update_time"] < SHARE_TOKEN_TIME:
+            if cache_share_token.get("share_token",'') != '':
+                logger.info(f'获取cache_share_token成功，{cache_share_token["share_token"]}')
+                return cache_share_token["share_token"]
         retry = 0
         while retry < RETRY_TIME:
             try:
                 response = requests.post("https://api.aliyundrive.com/v2/share_link/get_share_token",json=json_data,headers=self.get_headers(),verify=False)
                 json_result = json.loads(response.text)
                 logger.info(f'获取share_token成功，{response.text}')
+                SHARE_TOKEN[self.share_id] = {
+                    "share_token":json_result["share_token"],
+                    "update_time":time.time()
+                }
                 return json_result["share_token"]
             except Exception as ex:
                 logger.info(f'获取share_token失败，{ex}')
@@ -713,19 +726,20 @@ class ShareLink:
             "share_id":self.share_id,
             "parent_file_id":file_id,
             "limit":100,
-            "marker":"",
-            "image_thumbnail_process":"image/resize,w_160/format,jpeg",
-            "image_url_process":"image/resize,w_1920/format,jpeg",
-            "video_thumbnail_process":"video/snapshot,t_1000,f_jpg,ar_auto,w_300",
-            "order_by":"name",
-            "order_direction":"DESC"
+            # "marker":"",
+            "image_thumbnail_process": "image/resize,w_256/format,jpeg",
+            "image_url_process": "image/resize,w_1920/format,jpeg/interlace,1",
+            "video_thumbnail_process": "video/snapshot,t_1000,f_jpg,ar_auto,w_256",
+            "order_by": "name",
+            "order_direction": "DESC"
         }
         result = []
         retry = 0
         while retry < RETRY_TIME:
             try:
-                response = requests.post("https://api.aliyundrive.com/adrive/v3/file/list",json=json_data,headers=self.get_headers(),verify=False)
+                response = requests.post("https://api.aliyundrive.com/adrive/v2/file/list_by_share",json=json_data,headers=self.get_headers(),verify=False)
                 json_result = json.loads(response.text)
+                # logger.info(f'获取文件夹列表请求：{json_data}')
                 # logger.info(f'获取文件夹列表：{response.text}')
                 if json_result.get("items",None) == None:
                     retry += 1
@@ -779,8 +793,8 @@ class ShareLink:
         if task_info["status"] == "success":
             files = get_files_from_db_by_folder(task_info["file_id"],all=True)
             if files == None or len(files) == 0:
-                update_task_status(task_id,task_info["file_id"],"failed","获取文件列表失败",TASK_LOCK)
-                return None
+                # update_task_status(task_id,task_info["file_id"],"failed","获取文件列表失败",TASK_LOCK)
+                return []
             return files
         return 'wait'
 
